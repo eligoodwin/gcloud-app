@@ -5,6 +5,8 @@ import MySQLdb
 import jinja2
 import webapp2
 import json
+import random
+import string
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -69,8 +71,13 @@ class Prisoner(webapp2.RedirectHandler):
 
         inmateToAdd = {}
         inmateToAdd['fname'] = self.request.get('fname')
+        inmateToAdd['minit'] = self.request.get('minit')
         inmateToAdd['lname'] = self.request.get('lname')
         inmateToAdd['dob'] = self.request.get('dob')
+
+        inmateToAdd['username'] = str(inmateToAdd['fname']) + str(inmateToAdd['minit'])+ str(inmateToAdd['lname'])
+        inmateToAdd['password'] = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
+        inmateToAdd['wallet'] = 100
 
         cursor = db.cursor()
         cursor.execute("INSERT INTO inmate (fname, lname, dob) VALUES (%s, %s, %s);", (inmateToAdd['fname'],inmateToAdd['lname'], inmateToAdd['dob']))
