@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% autoescape true %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logon</title>
+</head>
+<body>
+    <h1>User logon</h1>
+    <p>Please enter in your credentials to proceed</p>
+    <form method="POST" action ="/logon">
+        Username;
+        <input type="text" name="username"><br>
+        Password:
+        <input type="password" name="password"><br>
+        <input type="submit" value="Logon">
+    </form>
+    {% if message.error is not none %}
+        <p>{{message.error}}</p>
+    {% endif %}
+</body>
+</html>
+{% endautoescape %}

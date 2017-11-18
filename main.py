@@ -56,6 +56,44 @@ class TestPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
+class Logon(webapp2.RedirectHandler):
+    def post(self):
+        #connect to database
+        db = connect_to_cloudsql()
+
+        #get user data
+        logonData = {}
+        logonData['username'] = self.request.get('username')
+        logonData['password'] = self.request.get('password')
+
+        #find matching query
+        cursor = db.cursor()
+        cursor.execute("SELECT username FROM inmate WHERE username = %s and password = %s;",
+                       (logonData['username'], logonData['password']))
+        row = cursor.fetchone()
+        cursor.close()
+
+        #test that values are not null
+        if row is not None:
+            #if not null render user splash page -- this page also will have session data, specifically the username
+            template_values = {'username': row[0]}
+            template = JINJA_ENVIRONMENT.get_template('splash.html')
+            self.response.write(template.render(template_values))
+
+        #if null redirect back to login page
+        else:
+            message = {'error' : 'username and/or password do not match'}
+            template = JINJA_ENVIRONMENT.get_template('start.html')
+            self.response.write(template.render(message = message))
+
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template("start.html")
+        message = {}
+        self.response.write(template.render(message = message))
+
+
+
+
 
 class Prisoner(webapp2.RedirectHandler):
     def get(self):
@@ -108,6 +146,8 @@ class Prisoner(webapp2.RedirectHandler):
 # [START app]
 app = webapp2.WSGIApplication([
     ('/', TestPage),
+    ('/start.html', Logon),
+    ('/logon', Logon),
     ('/prisoner', Prisoner)
 ], debug=True)
 # [END app]
