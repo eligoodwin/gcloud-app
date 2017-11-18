@@ -5,35 +5,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome</title>
+        <script>
+        window.onload = function (){
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        modText
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+            var username = getCookie("username");
+            console.log("Username is :" + username);
+            var innerText = "You are: " + username + ". This was retrieved from the cookie.";
+            document.getElementById('modText').innerHTML = innerText;
+        };
+    </script>
 </head>
 <body>
 
     <h1>WELCOME TO LEARNING ADVENTURE.</h1>
     <p>You learn now: {{username}}.</p>
-    <p id="modText">test</p>
-    <script>
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
 
-        var username = getCookie("username");
-        console.log("Username is :" + username);
-        var innerText = "You are: " + username + ". This was retrieved from the cookie.";
-        console.log(innerText);
-        document.getElementById("modText").innerHtml = innerText;
-    </script>
+    <p id="modText">test</p>
+
 
 </body>
 </html>

@@ -78,6 +78,7 @@ class Logon(webapp2.RedirectHandler):
             #if not null render user splash page -- this page also will have session data, specifically the username
             template_values = {'username': row[0]}
             template = JINJA_ENVIRONMENT.get_template('splash.html')
+            self.response.set_cookie(key="username", value=row[0], secure=True)
             self.response.write(template.render(template_values))
 
         #if null redirect back to login page
