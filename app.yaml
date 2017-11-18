@@ -1,0 +1,31 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+# [START handlers]
+handlers:
+
+- url: /bootstrap
+  static_dir: bootstrap
+
+- url: /.*
+  script: main.app
+# [END handlers]
+
+# [START libraries]
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+- name: MySQLdb
+  version: "latest"
+# [END libraries]
+
+
+# [START env_variables]
+env_variables:
+    CLOUDSQL_CONNECTION_NAME: prisonerlearning:us-central1:inmatedata
+    CLOUDSQL_USER: root
+    CLOUDSQL_PASSWORD: mrmeowmeowadventure
+# [END env_variables]
