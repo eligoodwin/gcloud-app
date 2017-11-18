@@ -76,17 +76,32 @@ class Prisoner(webapp2.RedirectHandler):
         inmateToAdd['dob'] = self.request.get('dob')
 
         inmateToAdd['username'] = str(inmateToAdd['fname']) + str(inmateToAdd['minit'])+ str(inmateToAdd['lname'])
-        inmateToAdd['password'] = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
+        inmateToAdd['password'] = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(12))
         inmateToAdd['wallet'] = 100
 
         cursor = db.cursor()
-        cursor.execute("INSERT INTO inmate (fname, lname, dob) VALUES (%s, %s, %s);", (inmateToAdd['fname'],inmateToAdd['lname'], inmateToAdd['dob']))
+        cursor.execute("INSERT INTO inmate (fname, minit, lname, dob, username, password, wallet) VALUES (%s, %s, %s, %s, %s, %s, %s);",
+                       (inmateToAdd['fname'], inmateToAdd['minit'], inmateToAdd['lname'],
+                        inmateToAdd['dob'], inmateToAdd['username'], inmateToAdd['password'],
+                        inmateToAdd['wallet']))
 
         db.commit()
         db.close()
 
-        self.response.write(json.dumps(inmateToAdd))
+        template_values = {
+            "fname" : inmateToAdd['fname'],
+            "minit" : inmateToAdd['minit'],
+            "lname" : inmateToAdd['lname'],
+            "dob":inmateToAdd['dob'],
+            "username":inmateToAdd['username'],
+            'password':inmateToAdd['password'],
+            'wallet': inmateToAdd['wallet']
+        }
 
+        #self.response.write(json.dumps(inmateToAdd))
+        template = JINJA_ENVIRONMENT.get_template('confirmAdd.html')
+
+        self.response.write(template.render(template_values))
 
 
 
